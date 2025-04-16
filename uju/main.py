@@ -8,11 +8,12 @@ from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 1000)
 
-df = pd.read_csv('./renttherunway_data.csv')
+df = pd.read_csv('../renttherunway_data.csv')
     
 # 선택한 컬럼만 사용
 selected_columns = ['user_id', 'item_id', 'fit', 'weight', 'rating', 'body type', 'height', 'size', 'age', 'bust size']
 df = df[selected_columns]
+
 
 # 결측치 비율 확인
 print("결측치 비율 (%):")
@@ -96,7 +97,7 @@ df = pd.concat([df, fit_encoded_df, bust_encoded_df, body_encoded_df, category_e
 feature_columns = [col for col in df.columns if col not in ['user_id', 'item_id', 'fit', 'weight', 'rating', 'body type', 'category', 'height', 'size', 'age', 'bust size', 'bust size_grouped', 'category_grouped', 'rating_5', 'weight_kg']]
 features_df = df[feature_columns]
 
-# 저장
+# csv 저장
 df.to_csv('preprocessed_data.csv', index=False)
 
 # 피처 컬럼 확인
