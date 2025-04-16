@@ -7,8 +7,14 @@ import matplotlib.pyplot as plt  # 시각화 패키지
 from matplotlib.pyplot import figure
 from sklearn.preprocessing import StandardScaler
 from win32con import NULL_BRUSH
+import seaborn as sns
 
 
+import matplotlib.gridspec as gridspec
+
+# 폰트/마이너스 기호 깨짐 방지
+matplotlib.rc('font', family='Malgun Gothic')
+plt.rcParams['axes.unicode_minus'] = False
 def next_line(next):
     print("******************[",next,"]******************")
 def in_line(title):
@@ -179,33 +185,100 @@ inv_body_type_mapping = {v: k for k, v in body_type_mapping.items()}
 in_line("data type 확인: ")
 print(data.dtypes)
 
+next_line("4-2. 상관 관계 확인")
+# NaN 값이 있는 행 제거 후 시각화
+scatter_data = data[['height (cm)', 'weight (kg)', 'size']].dropna()
 
-next_line("4. None 값 보간")
+in_line("4-2-1. 몸무게와 키")
+# 몸무게와 키의 상관 관계
+corr = scatter_data.corr().loc['height (cm)', 'weight (kg)']
+print("상관계수:", corr)
+def correlation_analysis(corr_input):
+    if 0.0 <= corr_input <= 0.1:
+        print("거의 상관 없음")
+    elif 0.1 < corr_input <= 0.3:
+        print("약한 상관관계 (weak)")
+    elif 0.3 < corr_input <= 0.7:
+        print("중간 정도 상관관계 (moderate)")
+    elif 0.7 < corr_input <= 1.0:
+        print("강한 상관관계 (strong)")
+    else:
+        print("상관계수 값이 범위를 벗어났습니다.")
+
+correlation_analysis(corr)
+
+in_line("몸무게와 사이즈")
+corr = scatter_data.corr().loc['weight (kg)', 'size']
+print("상관계수:", corr)
+correlation_analysis(corr)
+
+# 상관 관계 시각화
+# 회귀선 포함된 산점도
+plt.figure(figsize=(8, 6))
+sns.regplot(
+    x='height (cm)',
+    y='weight (kg)',
+    data=scatter_data,
+    scatter_kws={'alpha':0.5},   # 점 투명도
+    line_kws={'color':'red'}     # 회귀선 스타일
+)
+plt.title("키 vs 몸무게 (회귀선 포함)")
+plt.xlabel("키 (cm)")
+plt.ylabel("몸무게 (kg)")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(8, 6))
+sns.regplot(
+    x='size',
+    y='weight (kg)',
+    data=scatter_data,
+    scatter_kws={'alpha':0.5},   # 점 투명도
+    line_kws={'color':'red'}     # 회귀선 스타일
+)
+plt.title("사이즈 vs 몸무게 (회귀선 포함)")
+plt.xlabel("사이즈")
+plt.ylabel("몸무게 (kg)")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+
+next_line("4-1. None 값 보간")
 # 총 null 값 확인
 print("(1) None 값 확인: ")
 print(data.isnull().sum())
+before_len = len(data)
+print("(2) 전체 행(인스턴스)의 개수: ", before_len)
+# 각 size별 평균 몸무게 계산 (NaN 제외)
+size_weight_means = data.groupby('size')['weight (kg)'].mean()
 
-data['weight (kg)'] = data['weight (kg)'].fillna(data['weight (kg)'].mean())
+# NaN 값 채우기
+def fill_weight(row):
+    if pd.isna(row['weight (kg)']):
+        return size_weight_means.get(row['size'], None)  # 해당 사이즈 없으면 None
+    else:
+        return row['weight (kg)']
+
+# 적용
+data['weight (kg)'] = data.apply(fill_weight, axis=1)
+# data['weight (kg)'] = data['weight (kg)'].fillna(data['weight (kg)'].mean())
 data['rating'] = data['rating'].fillna(data['rating'].mean())
 data['body_type'] = data['body_type'].fillna(data['body_type'].mean())
 data['age'] = data['age'].fillna(data['age'].mean())
-print("(2) 결과:")
+print("(3) 결과:")
 print(data.isnull().sum())
-
+print("(3) 보간 후 전체 행(인스턴스)의 개수: ", len(data),
+      ", 삭제된 행의 수: ", before_len - len(data),
+      ", 삭제된 데이터 비율(%): {:.2f}%".format((before_len - len(data)) / before_len * 100))
 
 next_line("4. 시각화")
-# 시각화
+# 4. 시각화
 matplotlib.rc('font', family='Malgun Gothic')  # 한글 폰트 설정
 plt.rcParams['axes.unicode_minus'] = False     # 마이너스 기호 깨짐 방지
 
 # fig = plt.figure(5, (8, 6))
-
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-
-# 폰트/마이너스 기호 깨짐 방지
-matplotlib.rc('font', family='Malgun Gothic')
-plt.rcParams['axes.unicode_minus'] = False
 
 # 세련된 스타일 적용
 plt.style.use("seaborn-v0_8-poster")  # 전체 폰트/스타일 깔끔하게
@@ -216,8 +289,6 @@ fig.suptitle("의류 리뷰 데이터 시각화", fontsize=22, y=1.03)  # y를 �
 
 # GridSpec 설정
 gs = gridspec.GridSpec(4, 2, figure=fig, hspace=0.5, wspace=0.3)
-
-
 
 # subplot 설정
 fit_ax = fig.add_subplot(gs[0, 0])
@@ -276,7 +347,6 @@ age_ax.set_ylabel("수")
 age_ax.grid(True)
 
 # 막대 그래프 전체 출력
-plt.tight_layout()
 plt.show()
 
 # === 별점 파이차트 (별도 figure) ===
