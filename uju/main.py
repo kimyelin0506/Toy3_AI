@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
+from sklearn.cluster import KMeans
 
 # 데이터 시각화를 위한 설정
 pd.set_option('display.max_columns', None)
@@ -11,7 +12,7 @@ pd.set_option('display.width', 1000)
 df = pd.read_csv('../renttherunway_data.csv')
     
 # 선택한 컬럼만 사용
-selected_columns = ['user_id', 'item_id', 'fit', 'weight', 'rating', 'body type', 'height', 'size', 'age', 'bust size']
+selected_columns = ['user_id', 'item_id', 'fit', 'weight', 'rating', 'body type', 'height', 'size', 'age']
 df = df[selected_columns]
 
 
@@ -44,7 +45,7 @@ df['rating_5'] = ((df['rating'] - 1) / 2 + 1).round().astype(int)
 
 # 2. 결측치 처리
 # 먼저 모든 숫자형 컬럼의 결측치를 평균값으로 대체
-numeric_columns = ['height_cm', 'weight_kg', 'rating_5', 'age', 'size']
+numeric_columns = ['height_cm', 'weight_kg', 'rating_5', 'age']
 for col in numeric_columns:
     df[col] = df[col].fillna(df[col].mean())
 
@@ -63,24 +64,27 @@ encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
 fit_encoded = encoder.fit_transform(df[['fit']])
 fit_encoded_df = pd.DataFrame(fit_encoded, columns=encoder.get_feature_names_out(['fit']))
 
-# bust size: 상위 15개 + 'other'
-top_15_bust = df['bust size'].value_counts().head(15).index
-df['bust size_grouped'] = df['bust size'].apply(lambda x: x if x in top_15_bust else 'other')
-encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
-bust_encoded = encoder.fit_transform(df[['bust size_grouped']])
-bust_encoded_df = pd.DataFrame(bust_encoded, columns=encoder.get_feature_names_out(['bust size_grouped']))
-
 # body type: 원-핫 인코딩
 encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
 body_encoded = encoder.fit_transform(df[['body type']])
 body_encoded_df = pd.DataFrame(body_encoded, columns=encoder.get_feature_names_out(['body type']))
 
+# 프로젝트 목표는 상품 추천(사이즈 추천은 추후 진행)
+# # bust size: 상위 15개 + 'other'
+# top_15_bust = df['bust size'].value_counts().head(15).index
+# df['bust size_grouped'] = df['bust size'].apply(lambda x: x if x in top_15_bust else 'other')
+# encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
+# bust_encoded = encoder.fit_transform(df[['bust size_grouped']])
+# bust_encoded_df = pd.DataFrame(bust_encoded, columns=encoder.get_feature_names_out(['bust size_grouped']))
+
+# 카테고리 확인시 50% 드레스, 23% 가운, 10% 다른드레스
+# 외국 의류렌탈샵이라 카테고리 분포 다양하지않음 -> 활용 어려움
 # category: 상위 10개 + 'other'
-top_10_categories = df['category'].value_counts().head(10).index
-df['category_grouped'] = df['category'].apply(lambda x: x if x in top_10_categories else 'other')
-encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
-category_encoded = encoder.fit_transform(df[['category_grouped']])
-category_encoded_df = pd.DataFrame(category_encoded, columns=encoder.get_feature_names_out(['category_grouped']))
+# top_10_categories = df['category'].value_counts().head(10).index
+# df['category_grouped'] = df['category'].apply(lambda x: x if x in top_10_categories else 'other')
+# encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
+# category_encoded = encoder.fit_transform(df[['category_grouped']])
+# category_encoded_df = pd.DataFrame(category_encoded, columns=encoder.get_feature_names_out(['category_grouped']))
 
 # 4. 스케일링
 scaler = MinMaxScaler()
@@ -91,10 +95,10 @@ df['size_scaled'] = scaler.fit_transform(df[['size']])
 df['age_scaled'] = scaler.fit_transform(df[['age']])
 
 # 모든 처리된 특성 결합
-df = pd.concat([df, fit_encoded_df, bust_encoded_df, body_encoded_df, category_encoded_df], axis=1)
+df = pd.concat([df, fit_encoded_df, body_encoded_df], axis=1)
 
 # 학습용 피처 선택 (user_id, item_id 제외)
-feature_columns = [col for col in df.columns if col not in ['user_id', 'item_id', 'fit', 'weight', 'rating', 'body type', 'category', 'height', 'size', 'age', 'bust size', 'bust size_grouped', 'category_grouped', 'rating_5', 'weight_kg']]
+feature_columns = [col for col in df.columns if col not in ['user_id', 'item_id', 'fit', 'weight', 'rating', 'body type', 'height_cm', 'size', 'age', 'rating_5', 'weight_kg']]
 features_df = df[feature_columns]
 
 # csv 저장
@@ -104,7 +108,7 @@ df.to_csv('preprocessed_data.csv', index=False)
 print("\n학습용 피처 컬럼:", feature_columns)
 
 # 범주형 분포
-for col in ['bust size_grouped', 'body type', 'category_grouped', 'fit']:
+for col in ['body type', 'fit']:
     plt.figure(figsize=(10, 6))
     sns.countplot(x=col, data=df)
     plt.title(f'{col} Distribution')
