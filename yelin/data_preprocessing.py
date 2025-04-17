@@ -1,15 +1,8 @@
-from itertools import count
-
 import matplotlib
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt  # 시각화 패키지
-from matplotlib.pyplot import figure
 from sklearn.preprocessing import StandardScaler
-# from win32con import NULL_BRUSH
 import seaborn as sns
-
-
 import matplotlib.gridspec as gridspec
 
 # 폰트/마이너스 기호 깨짐 방지
@@ -43,6 +36,7 @@ next_line("3. 데이터 전처리")
 # 3. 데이터 전처리
 # 3-1. 인코딩
 print("3-1. 인코딩")
+print("총 유저 수: ", len(data['user_id'].unique()))
 """
     fit
 """
@@ -102,63 +96,13 @@ data['body_type'] = data.loc[:, 'body_type'].map(body_type_mapping)
 print("(2) 결과:")
 print(data['body_type'])
 
-# in_line("3-1-5. category")
-# # 3-1-5. category
-# # 종류 확인 -> {'top', 'cardigan', 'sweatshirt', 'jogger', 'parka', 'skirt', 'midi', 'sweatershirt', 'buttondown', 'jeans', 'kaftan', 'kimono', 'culotte', 'dress', 'shirt', 'cami', 'legging', 'overalls', 'coat', 'down', 'trouser', 'leggings', 't-shirt', 'for', 'henley', 'jacket', 'romper', 'bomber', 'peacoat', 'frock', 'skirts', 'crewneck', 'sweater', 'gown', 'jumpsuit', 'tee', 'skort', 'cape', 'combo', 'culottes', 'knit', 'hoodie', 'shirtdress', 'maxi', 'blazer', 'poncho', 'overcoat', 'blouson', 'turtleneck', 'pant', 'shift', 'vest', 'caftan', 'tunic', 'tight', 'sweatpants', 'tank', 'blouse', 'pullover', 'suit', 'trench', 'print', 'duster', 'mini', 'ballgown', 'sheath', 'trousers', 'pants'}
-# print("(1) 종류 확인: ", set(data['category']))
-
-# 매핑
-
-# category_mapping = {
-#     'top',
-#     'cardigan',
-#     'sweatshirt',
-#     'jogger',
-#     'parka',
-#     'skirt',
-#     'midi',
-#     'sweatershirt',
-#     'buttondown',
-#     'jeans',
-#     'kaftan',
-#     'kimono',
-#     'culotte',
-#     'dress',
-#     'shirt',
-#     'cami',
-#     'legging',
-#     'overalls',
-#     'coat',
-#     'down',
-#     'trouser',
-#     'leggings',
-#     't-shirt',
-#     'for',
-#     'henley',
-#     'jacket',
-#     'romper',
-#     'bomber',
-#     'peacoat',
-#     'frock',
-#     'skirts',
-#     'crewneck',
-#     'sweater',
-#     'gown',
-#     'jumpsuit',
-#     'tee',
-#     'skort',
-#     'cape',
-#     'combo',
-#     'culottes',
-#     'knit',
-#     'hoodie', 'shirtdress', 'maxi', 'blazer', 'poncho', 'overcoat', 'blouson', 'turtleneck', 'pant', 'shift', 'vest', 'caftan', 'tunic', 'tight', 'sweatpants', 'tank', 'blouse', 'pullover', 'suit', 'trench', 'print', 'duster', 'mini', 'ballgown', 'sheath', 'trousers', 'pants'}
-
 in_line("3-1-6. height")
 # 3-1-6. height
 # 1 피트 = 30.48 cm, 1 인치 = 2.54 cm
+print(data['height (cm)'].unique())
 def height_trans(height):
-    if height is None:
-        return None
+    if pd.isna(height):
+        return height
     feet = 0.0
     inch = 0.0
     if isinstance(height, str) and "'" in height:
@@ -173,6 +117,7 @@ def height_trans(height):
 data['height (cm)'] = data.loc[:, 'height (cm)'].apply(height_trans)
 print("(1) 결과:")
 print(data["height (cm)"])
+print(data['height (cm)'].unique())
 
 in_line("3-1-7. size")
 # 3-1-7. size
@@ -222,12 +167,12 @@ sns.regplot(
     scatter_kws={'alpha':0.5},   # 점 투명도
     line_kws={'color':'red'}     # 회귀선 스타일
 )
-plt.title("키 vs 몸무게 (회귀선 포함)")
-plt.xlabel("키 (cm)")
-plt.ylabel("몸무게 (kg)")
-plt.grid(True)
-plt.tight_layout()
-plt.show()
+# plt.title("키 vs 몸무게 (회귀선 포함)")
+# plt.xlabel("키 (cm)")
+# plt.ylabel("몸무게 (kg)")
+# plt.grid(True)
+# plt.tight_layout()
+# plt.show()
 
 plt.figure(figsize=(8, 6))
 sns.regplot(
@@ -237,12 +182,12 @@ sns.regplot(
     scatter_kws={'alpha':0.5},   # 점 투명도
     line_kws={'color':'red'}     # 회귀선 스타일
 )
-plt.title("사이즈 vs 몸무게 (회귀선 포함)")
-plt.xlabel("사이즈")
-plt.ylabel("몸무게 (kg)")
-plt.grid(True)
-plt.tight_layout()
-plt.show()
+# plt.title("사이즈 vs 몸무게 (회귀선 포함)")
+# plt.xlabel("사이즈")
+# plt.ylabel("몸무게 (kg)")
+# plt.grid(True)
+# plt.tight_layout()
+# plt.show()
 
 
 next_line("4-1. None 값 보간")
@@ -251,6 +196,7 @@ print("(1) None 값 확인: ")
 print(data.isnull().sum())
 before_len = len(data)
 print("(2) 전체 행(인스턴스)의 개수: ", before_len)
+
 # 각 size별 평균 몸무게 계산 (NaN 제외)
 size_weight_means = data.groupby('size')['weight (kg)'].mean()
 
@@ -264,6 +210,7 @@ def fill_weight(row):
 # 적용
 data['weight (kg)'] = data.apply(fill_weight, axis=1)
 # data['weight (kg)'] = data['weight (kg)'].fillna(data['weight (kg)'].mean())
+data['height (cm)'] = data['height (cm)'].fillna(data['height (cm)'].mean())
 data['rating'] = data['rating'].fillna(data['rating'].mean())
 data['body_type'] = data['body_type'].fillna(data['body_type'].mean())
 data['age'] = data['age'].fillna(data['age'].mean())
@@ -272,7 +219,7 @@ print(data.isnull().sum())
 print("(3) 보간 후 전체 행(인스턴스)의 개수: ", len(data),
       ", 삭제된 행의 수: ", before_len - len(data),
       ", 삭제된 데이터 비율(%): {:.2f}%".format((before_len - len(data)) / before_len * 100))
-
+print(set(data['rating']))
 next_line("4. 시각화")
 # 4. 시각화
 matplotlib.rc('font', family='Malgun Gothic')  # 한글 폰트 설정
@@ -284,164 +231,99 @@ plt.rcParams['axes.unicode_minus'] = False     # 마이너스 기호 깨짐 방�
 plt.style.use("seaborn-v0_8-poster")  # 전체 폰트/스타일 깔끔하게
 
 # 전체 도화지 사이즈 설정
-fig = plt.figure(figsize=(18, 16))
-fig.suptitle("의류 리뷰 데이터 시각화", fontsize=22, y=1.03)  # y를 올려서 겹침 방지
+def visualization(data_input):
+    fig = plt.figure(figsize=(18, 16))
+    fig.suptitle("의류 리뷰 데이터 시각화", fontsize=22, y=1.03)  # y를 올려서 겹침 방지
 
-# GridSpec 설정
-gs = gridspec.GridSpec(4, 2, figure=fig, hspace=0.5, wspace=0.3)
+    # GridSpec 설정
+    gs = gridspec.GridSpec(4, 2, figure=fig, hspace=0.5, wspace=0.3)
 
-# subplot 설정
-fit_ax = fig.add_subplot(gs[0, 0])
-weight_ax = fig.add_subplot(gs[0, 1])
-body_type_ax = fig.add_subplot(gs[1, 0])
-height_ax = fig.add_subplot(gs[1, 1])
-size_ax = fig.add_subplot(gs[2, 0])
-age_ax = fig.add_subplot(gs[2, 1])
+    # subplot 설정
+    fit_ax = fig.add_subplot(gs[0, 0])
+    weight_ax = fig.add_subplot(gs[0, 1])
+    body_type_ax = fig.add_subplot(gs[1, 0])
+    height_ax = fig.add_subplot(gs[1, 1])
+    size_ax = fig.add_subplot(gs[2, 0])
+    age_ax = fig.add_subplot(gs[2, 1])
 
-# === 히스토그램별 시각화 ===
+    # === 히스토그램별 시각화 ===
 
-# 핏
-fit_ax.hist(data['fit'], bins=[-0.5, 0.5, 1.5, 2.5], color="#3498db", edgecolor='black')
-fit_ax.set_xticks(list(inv_fit_mapping.keys()))
-fit_ax.set_xticklabels([inv_fit_mapping[i] for i in inv_fit_mapping.keys()])
-fit_ax.set_title("핏 분포")
-fit_ax.set_xlabel("핏 종류")
-fit_ax.set_ylabel("수")
-fit_ax.grid(True)
+    # 핏
+    fit_ax.hist(data_input['fit'], bins=[-0.5, 0.5, 1.5, 2.5], color="#3498db", edgecolor='black')
+    fit_ax.set_xticks(list(inv_fit_mapping.keys()))
+    fit_ax.set_xticklabels([inv_fit_mapping[i] for i in inv_fit_mapping.keys()])
+    fit_ax.set_title("핏 분포")
+    fit_ax.set_xlabel("핏 종류")
+    fit_ax.set_ylabel("수")
+    fit_ax.grid(True)
 
-# 몸무게
-weight_ax.hist(data['weight (kg)'], bins=20, color="#2ecc71", edgecolor='black')
-weight_ax.set_title("몸무게 분포")
-weight_ax.set_xlabel("몸무게 (kg)")
-weight_ax.set_ylabel("수")
-weight_ax.grid(True)
+    # 몸무게
+    weight_ax.hist(data_input['weight (kg)'], bins=20, color="#2ecc71", edgecolor='black')
+    weight_ax.set_title("몸무게 분포")
+    weight_ax.set_xlabel("몸무게 (kg)")
+    weight_ax.set_ylabel("수")
+    weight_ax.grid(True)
 
-# 체형
-body_type_ax.hist(data['body_type'], bins=6, color="#9b59b6", edgecolor='black')
-body_type_ax.set_xticks(list(inv_body_type_mapping.keys()))
-body_type_ax.set_xticklabels([inv_body_type_mapping[i] for i in inv_body_type_mapping.keys()])
-body_type_ax.set_title("체형 분포")
-body_type_ax.set_xlabel("체형")
-body_type_ax.set_ylabel("수")
-body_type_ax.grid(True)
+    # 체형
+    body_type_ax.hist(data_input['body_type'], bins=6, color="#9b59b6", edgecolor='black')
+    body_type_ax.set_xticks(list(inv_body_type_mapping.keys()))
+    body_type_ax.set_xticklabels([inv_body_type_mapping[i] for i in inv_body_type_mapping.keys()])
+    body_type_ax.set_title("체형 분포")
+    body_type_ax.set_xlabel("체형")
+    body_type_ax.set_ylabel("수")
+    body_type_ax.grid(True)
 
-# 키
-height_ax.hist(data['height (cm)'], bins=20, color="#f1c40f", edgecolor='black')
-height_ax.set_title("키 분포")
-height_ax.set_xlabel("키 (cm)")
-height_ax.set_ylabel("수")
-height_ax.grid(True)
+    # 키
+    sns.histplot(data=data_input, x='height (cm)', bins=20, ax=height_ax,
+                 color="#f1c40f", edgecolor='black')
+    height_ax.set_title("키 분포")
+    height_ax.set_xlabel("키 (cm)")
+    height_ax.set_ylabel("수")
+    height_ax.grid(True)
 
-# 사이즈
-size_ax.hist(data['size'], bins=len(data['size'].unique()), color="#e67e22", edgecolor='black')
-size_ax.set_title("사이즈 분포")
-size_ax.set_xlabel("사이즈")
-size_ax.set_ylabel("수")
-size_ax.grid(True)
+    # 사이즈
+    size_ax.hist(data_input['size'], bins=len(data_input['size'].unique()), color="#e67e22", edgecolor='black')
+    size_ax.set_title("사이즈 분포")
+    size_ax.set_xlabel("사이즈")
+    size_ax.set_ylabel("수")
+    size_ax.grid(True)
 
-# 나이
-age_ax.hist(data['age'], bins=20, color="#e74c3c", edgecolor='black')
-age_ax.set_title("나이 분포")
-age_ax.set_xlabel("나이")
-age_ax.set_ylabel("수")
-age_ax.grid(True)
+    # 나이
+    age_ax.hist(data_input['age'], bins=20, color="#e74c3c", edgecolor='black')
+    age_ax.set_title("나이 분포")
+    age_ax.set_xlabel("나이")
+    age_ax.set_ylabel("수")
+    age_ax.grid(True)
 
-# 막대 그래프 전체 출력
-plt.show()
+    # 막대 그래프 전체 출력
+    plt.show()
 
-# === 별점 파이차트 (별도 figure) ===
-rating_counts = data['rating'].dropna().value_counts().sort_index()
-rating_labels = rating_counts.index
-rating_values = rating_counts.values
-explode = [0.05] * len(rating_values)
+    # === 별점 파이차트 (별도 figure) ===
+    rating_counts = data_input['rating'].dropna().value_counts().sort_index()
+    rating_labels = rating_counts.index
+    rating_values = rating_counts.values
+    explode = [0.05] * len(rating_values)
 
-plt.figure(figsize=(7, 7))
-plt.pie(rating_values, labels=rating_labels, autopct='%1.1f%%',
-        explode=explode, shadow=True, startangle=140, colors=plt.cm.Set3.colors)
-plt.title("별점 분포", fontsize=18)
+    plt.figure(figsize=(7, 7))
+    plt.pie(rating_values, labels=rating_labels, autopct='%1.1f%%',
+            explode=explode, shadow=True, startangle=140, colors=plt.cm.Set3.colors)
+    plt.title("별점 분포", fontsize=18)
 
-plt.show()
+    plt.show()
 
+visualization(data)
 
-# # 시각화 1: 막대 그래프(누적)
-# # 전체 도화지 사이즈 설정
-# fig = plt.figure(figsize=(16, 14))  # 전체 figure 사이즈 조절
-#
-# # GridSpec으로 세밀하게 레이아웃 설정 (행 4개, 열 2개)
-# gs = gridspec.GridSpec(4, 2, figure=fig, hspace=0.8, wspace=0.2)  # 패딩 설정
-#
-# # 각 subplot 배치
-# fit_ax = fig.add_subplot(gs[0, 0])     # 1행 1열
-# weight_ax = fig.add_subplot(gs[0, 1])  # 1행 2열
-# # rating_ax = fig.add_subplot(gs[1, :])  # 2행 전체 (1: span all 2 columns)
-# body_type_ax = fig.add_subplot(gs[1, 0])
-# height_ax = fig.add_subplot(gs[1, 1])
-# size_ax = fig.add_subplot(gs[2, 0])
-# age_ax = fig.add_subplot(gs[2, 1])
-#
-# # === 히스토그램별 시각화 ===
-# fit_ax.hist(data['fit'], bins=[-0.5, 0.5, 1.5, 2.5])
-# fit_ax.set_xticks(list(inv_fit_mapping.keys()))
-# fit_ax.set_xticklabels([inv_fit_mapping[i] for i in inv_fit_mapping.keys()])
-# fit_ax.set_xlabel("핏 종류")
-# fit_ax.set_ylabel("누적 수")
-# fit_ax.set_title("핏 분포")
-#
-# weight_ax.hist(data['weight (kg)'])
-# weight_ax.set_xlabel("몸무게 (kg)")
-# weight_ax.set_ylabel("누적 수")
-# weight_ax.set_title("몸무게 분포")
-#
-# # rating_ax.hist(data['rating'])
-# # rating_ax.set_xlabel("별점")
-# # rating_ax.set_ylabel("누적 수")
-# # rating_ax.set_title("별점 분포")
-#
-# # NaN 제거 후 value_counts로 비율 계산
-# # rating_counts = data['rating'].dropna().value_counts().sort_index()
-# # rating_labels = rating_counts.index
-# # rating_values = rating_counts.values
-# # rating_ax.pie(rating_values, labels=rating_labels, autopct='%1.1f%%')
-# # rating_ax.set_title("별점 분포")
-#
-# body_type_ax.hist(data['body_type'])
-# body_type_ax.set_xlabel("체형")
-# body_type_ax.set_xticks(list(inv_body_type_mapping.keys()))
-# body_type_ax.set_xticklabels([inv_body_type_mapping[i] for i in inv_body_type_mapping.keys()])
-# body_type_ax.set_ylabel("누적 수")
-# body_type_ax.set_title("체형 분포")
-#
-# height_ax.hist(data['height (cm)'])
-# height_ax.set_xlabel("키 (cm)")
-# height_ax.set_ylabel("누적 수")
-# height_ax.set_title("키 분포")
-#
-# size_ax.hist(data['size'])
-# size_ax.set_xlabel("사이즈")
-# size_ax.set_ylabel("누적 수")
-# size_ax.set_title("사이즈 분포")
-#
-# age_ax.hist(data['age'])
-# age_ax.set_xlabel("나이")
-# age_ax.set_ylabel("누적 수")
-# age_ax.set_title("나이 분포")
-#
-# # 전체 레이아웃 조정
-# plt.tight_layout()
-# plt.show()
-# # === rating 파이차트는 별도 figure로 ===
-# rating_counts = data['rating'].dropna().value_counts().sort_index()
-# rating_labels = rating_counts.index
-# rating_values = rating_counts.values
-#
-# plt.figure(figsize=(6, 6))  # 별도 사이즈
-# plt.pie(rating_values, labels=rating_labels, autopct='%1.1f%%', startangle=90)
-# plt.title("별점 분포")
-# plt.tight_layout()
-# plt.show()
-# next_line("6. 스케일 조정 - 표준화")
-# # 4. 스케일 조정 - 표준화
-# sc = StandardScaler()  # 데이터 표준화
-# sc.fit(data)  # 표준편차와 평균 계산
-# data = sc.transform(data)
-# print(data)
+# 스케일 조정
+sc = StandardScaler()
+scaled_array = sc.fit_transform(data)
+# 원본 데이터 백업 (스케일링 전에)
+original_df = data.copy()
+
+# DataFrame으로 다시 변환 (컬럼명 유지)
+data = pd.DataFrame(scaled_array, columns=original_df.columns)
+
+# 조건: height (cm) 컬럼이 존재하는 DataFrame에서 시각화
+if isinstance(data, pd.DataFrame) and 'height (cm)' in data.columns:
+    visualization(data)
+else:
+    print("data가 DataFrame 형식이 아니거나, 'height (cm)' 컬럼이 없습니다.")
