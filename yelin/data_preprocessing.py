@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt  # 시각화 패키지
 from matplotlib.pyplot import figure
 from sklearn.preprocessing import StandardScaler
-from win32con import NULL_BRUSH
+# from win32con import NULL_BRUSH
 import seaborn as sns
 
 
