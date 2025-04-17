@@ -19,7 +19,7 @@ import os
 os.makedirs('plots', exist_ok=True)
 
 # 데이터 로드
-df = pd.read_csv('renttherunway_data.csv')
+df = pd.read_csv('../renttherunway_data.csv')
 print(f"전체 데이터 크기: {df.shape}")
 
 # 원본 rating 분포 확인
