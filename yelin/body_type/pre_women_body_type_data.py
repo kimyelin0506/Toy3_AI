@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 
 # 2. 데이터 불러오기
-data = pd.read_csv('../women body syn.csv')
+data = pd.read_csv('women body syn.csv')
 
 # 3. 전처리
 
