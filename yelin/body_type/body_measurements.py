@@ -1,7 +1,7 @@
 import pandas as pd
 
 # 데이터 불러오기
-data = pd.read_csv('../Body Measurements.csv')  # 파일명 맞게 수정해줘
+data = pd.read_csv('Body Measurements.csv')  # 파일명 맞게 수정해줘
 
 # 컬럼명 바꾸기(빈공백 제거)
 data.columns = data.columns.str.replace(' ', '')
