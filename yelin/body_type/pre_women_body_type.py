@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.preprocessing import StandardScaler, LabelEncoder, MinMaxScaler
 
 # 2. 데이터 불러오기
 data = pd.read_csv('women body syn.csv')
@@ -45,7 +45,7 @@ def classify_body_type(row):
         return 'body_type_pear'
     elif abs(bust - hips) < 3 and waist / hips < 0.8:
         return 'body_type_hourglass'
-    elif height < 62:  # 157cm 이하
+    elif height < 157:  # 157cm 이하
         return 'body_type_petite'
     elif abs(bust - hips) < 2 and waist / hips >= 0.8:
         return 'body_type_straight & narrow'
@@ -64,7 +64,7 @@ le_body = LabelEncoder()
 y_encoded = le_body.fit_transform(y)
 
 ## 3-6. 데이터 스케일링 (표준화)
-scaler = StandardScaler()
+scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
 # 4. 학습용 데이터, 테스트용 데이터 분리

@@ -37,3 +37,24 @@ EarlyStopping 적용해서 과적합 방지.
 
 ⭐️ 장점: 분류 없이 데이터 패턴을 스스로 발견.
 ⭐️ 단점: n_clusters 수를 직접 정해야 함. (5로 고정했음)
+
+랜덤포레스트(Random Forest) 쪽은
+→ 미리 "정답" 레이블(body_type_apple, body_type_athletic, body_type_full bust, body_type_hourglass, body_type_pear, body_type_straight & narrow)이 존재해.
+→ 즉, classify_body_type() 함수로 이미 "개인 체형(body type)"을 딱 정해놓은 다음, 그걸 타겟(y값)으로 학습하는 거야. → 그래서 6개 클래스가 고정된 상태로 모델을 돌리는 거지.
+
+K-Means 쪽은
+→ 정답(타겟 레이블)이 없는 상태야.
+→ 데이터 포인트들의 (Waist, Hips, Bust/Chest, BMI) 이런 특징(feature)만 보고, K-Means가 "알아서" 비슷한 것끼리 7개로 나눈다는 거야 (n_clusters=7 설정).
+→ 그래서 실제로는 "body_type_apple" 이런 태그는 모른 채, 그냥 군집 번호(0~6번)만 부여한 거고,
+→ 군집마다 "대표 체형"을 나중에 붙이는 과정이 따로 들어간 거야. (군집 안에서 제일 많이 나온 개인 체형을 대표로!)
+
+그러니까 질문한 거처럼:
+KMeans 군집 중에서 어떤 클래스에 소속된 데이터가 하나도 없는 경우가 있을 수도 있고,
+또 원래 개인 체형 6개 중 일부는 특정 군집에는 하나도 없을 수도 있어.
+(특히 n_clusters=7로 6개보다 군집 수를 더 많이 잡았으니까 더 그럴 확률이 높아.)
+
+핵심 요약
+RandomForest는: 이미 타겟이 "명확하게 6개" 존재.
+KMeans는: 타겟 없이 "알아서 7개" 군집으로 묶음. → 원래 존재하는 body type 수랑은 직접적인 관계 없음.
+그래서 "어떤 군집에는 특정 body type이 하나도 없을 수도 있다" 가 맞아!
+
