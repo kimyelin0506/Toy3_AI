@@ -125,13 +125,13 @@ def classify_body_type(row):
 # 📊 전체 데이터 기준 일치율 (Accuracy): 0.6867
 # X = data[['Waist', 'Hips', 'Bust/Chest', 'BMI']].copy()  # Silhouette Score: 0.2724
 # 📊 전체 데이터 기준 일치율 (Accuracy): 0.6735
-# X = data[['BMI', 'Hips', 'Waist']].copy()  # Silhouette Score: 0.2911
+X = data[['BMI', 'Hips', 'Waist']].copy()  # Silhouette Score: 0.2911
 # 📊 전체 데이터 기준 일치율 (Accuracy): 0.6867
 # X = data[['BMI', 'Hips', 'Waist', 'Bust/Chest']].copy()  # Silhouette Score: 0.2724
 # 📊 전체 데이터 기준 일치율 (Accuracy): 0.6962
 # X = data[['BMI', 'Waist', 'Bust/Chest']].copy()  # Silhouette Score: 0.2934
 # 📊 전체 데이터 기준 일치율 (Accuracy): 0.6444
-X = data[['BMI', 'Hips', 'Bust/Chest']].copy()  # Silhouette Score: 0.2850
+# X = data[['BMI', 'Hips', 'Bust/Chest']].copy()  # Silhouette Score: 0.2850
 
 # 5. 스케일링
 # scaler = MinMaxScaler()
