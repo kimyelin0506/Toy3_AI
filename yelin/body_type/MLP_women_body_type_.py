@@ -180,8 +180,14 @@ cm = confusion_matrix(y_true_classes, y_pred_classes)
 
 # 3. Confusion Matrix 시각화
 plt.figure(figsize=(10,8))
+# sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
+#             xticklabels=le_body.classes_, yticklabels=le_body.classes_)
+xticklabels = [label.replace('body_type_', '') for label in le_body.classes_]
+yticklabels = [label.replace('body_type_', '') for label in le_body.classes_]
+
 sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
-            xticklabels=le_body.classes_, yticklabels=le_body.classes_)
+            xticklabels=xticklabels, yticklabels=yticklabels)
+
 plt.title('Confusion Matrix')
 plt.xlabel('Predicted Label')
 plt.ylabel('True Label')
@@ -198,9 +204,9 @@ f1 = f1_score(y_true_classes, y_pred_classes, average='weighted')
 print(f"Weighted F1 Score: {f1:.4f}")
 
 # 6-4. 딥러닝 혼동행렬 시각화
-plt.figure(figsize=(8,6))
+plt.figure(figsize=(10,8))
 sns.heatmap(confusion_matrix(y_test, nn_preds), annot=True, fmt='d', cmap='Greens',
-            xticklabels=le_body.classes_, yticklabels=le_body.classes_)
+            xticklabels=xticklabels, yticklabels=yticklabels)
 plt.title('Neural Network Confusion Matrix')
 plt.xlabel('Predicted')
 plt.ylabel('True')

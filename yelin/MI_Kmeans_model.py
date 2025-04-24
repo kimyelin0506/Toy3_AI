@@ -300,7 +300,7 @@ def apply_pca_and_mi_based_clustering(train_df, continuous_cols, onehot_cols):
     train_features_df_pca = scaling_data(train_df, onehot_weight=pca_weight)
 
     # 4. MI 특성만 적용하여 KMeans 수행
-    optimal_k_mi = find_optimal_k(train_features_df_pca, k_min=6, k_max=21)
+    optimal_k_mi = find_optimal_k(train_features_df_pca, k_min=8, k_max=21)
     kmeans_mi, silhouette_mi = apply_kmeans_with_silhouette(train_features_df_pca, optimal_k_mi, selected_features_mi)
 
     # 5. PCA 기반 KMeans 수행

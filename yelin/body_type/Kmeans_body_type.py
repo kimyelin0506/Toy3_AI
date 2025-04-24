@@ -25,19 +25,21 @@ K-means 클러스터링으로 비슷한 사람들을 그룹으로 묶고
 
 # 2. 데이터 불러오기 및 기본 전처리
 data = pd.read_csv('women_body_with_bmi.csv')
-data.columns = [col.strip() for col in data.columns]
-data = data.dropna()
-
-# Label Encoding
-le_gender = LabelEncoder()
-data['Gender'] = le_gender.fit_transform(data['Gender'])
-
-le_cup = LabelEncoder()
-data['Cup Size'] = le_cup.fit_transform(data['Cup Size'])
-# print(len(data))  # 20000
+data = data.drop('Body Shape Index', axis=1)
+data = data.drop('Gender', axis=1)
+# data.columns = [col.strip() for col in data.columns]
+# data = data.dropna()
+#
+# # Label Encoding
+# le_gender = LabelEncoder()
+# data['Gender'] = le_gender.fit_transform(data['Gender'])
+#
+# le_cup = LabelEncoder()
+# data['Cup Size'] = le_cup.fit_transform(data['Cup Size'])
+# # print(len(data))  # 20000
 # # 12. BMI 계산해서 추가
 # data['BMI'] = data['Weight'] / ( (data['Height'] / 100) ** 2 )
-#
+
 # # 13. CSV 파일로 저장
 # data.to_csv('women_body_with_bmi.csv', index=False)
 
@@ -116,22 +118,23 @@ def classify_body_type(row):
 # plt.grid(True)
 # plt.show()
 # 4. 사용할 feature만 선택 (허리, 힙, 가슴, 키)
-# 📊 전체 데이터 기준 일치율 (Accuracy): 0.6290
-# X = data.copy()  # Silhouette Score: 0.1577
+# 📊 전체 데이터 기준 일치율 (Accuracy): 0.6262
+# X = data.copy()  # Silhouette Score: 0.1584
 # 📊 전체 데이터 기준 일치율 (Accuracy): 0.6624
 # X = data[['Waist', 'Hips', 'Bust/Chest', 'Height']].copy()  # Silhouette Score: 0.2114
 # 📊 전체 데이터 기준 일치율 (Accuracy): 0.6839
 # X = data[['Waist', 'Hips', 'Bust/Chest']].copy()  # Silhouette Score: 0.3129
-# 📊 전체 데이터 기준 일치율 (Accuracy): 0.6867
-# X = data[['Waist', 'Hips', 'Bust/Chest', 'BMI']].copy()  # Silhouette Score: 0.2724
 # 📊 전체 데이터 기준 일치율 (Accuracy): 0.6735
-X = data[['BMI', 'Hips', 'Waist']].copy()  # Silhouette Score: 0.2911
+# X = data[['BMI', 'Hips', 'Waist']].copy()  # Silhouette Score: 0.2911
 # 📊 전체 데이터 기준 일치율 (Accuracy): 0.6867
 # X = data[['BMI', 'Hips', 'Waist', 'Bust/Chest']].copy()  # Silhouette Score: 0.2724
 # 📊 전체 데이터 기준 일치율 (Accuracy): 0.6962
-# X = data[['BMI', 'Waist', 'Bust/Chest']].copy()  # Silhouette Score: 0.2934
+X = data[['BMI', 'Waist', 'Bust/Chest']].copy()  # Silhouette Score: 0.2934
 # 📊 전체 데이터 기준 일치율 (Accuracy): 0.6444
 # X = data[['BMI', 'Hips', 'Bust/Chest']].copy()  # Silhouette Score: 0.2850
+# 📊 전체 데이터 기준 일치율 (Accuracy): 0.5791
+# X = data[['Hips', 'Height', 'Cup Size']].copy()  # Silhouette Score: 0.3293
+# ['Gender', 'Weight',  'Waist', 'Hips', 'Bust/Chest', 'Height', 'Cup Size', 'BMI', 'body_type_idx']
 
 # 5. 스케일링
 # scaler = MinMaxScaler()
