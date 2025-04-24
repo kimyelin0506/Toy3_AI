@@ -16,7 +16,7 @@ df = pd.read_csv('../renttherunway_data.csv')
 print(f"전체 데이터 크기: {df.shape}")
 
 # 👉 데이터 50% 샘플링
-df = df.sample(frac=0.5, random_state=42).reset_index(drop=True)
+# df = df.sample(frac=0.5, random_state=42).reset_index(drop=True)
 
 # 키를 cm로 변환하는 함수
 def height_to_cm(height):
@@ -66,7 +66,6 @@ def preprocessing_data(data):
     return data
 
 # 스케일링 함수
-# 스케일링 함수
 def scaling_data(data, onehot_weight=0.2):
     scaler = MinMaxScaler()
     scaled_columns = ['weight_kg', 'height_cm', 'size', 'age']
@@ -80,7 +79,7 @@ def scaling_data(data, onehot_weight=0.2):
 
     # 원핫 인코딩 컬럼에 가중치 적용
     for col in onehot_columns:
-        data[col] = data[col] /7
+        data[col] = data[col] / onehot_weight
 
     # 최종 feature 모음
     feature_columns = [f'{col}_scaled' for col in scaled_columns] + onehot_columns
@@ -287,8 +286,8 @@ new_features_df = scaling_data(new_df, onehot_weight=0.7989)
 # plt.close()
 
 # 4. 최적 클러스터 찾기 (자동)
-optimal_k = find_optimal_k(train_features_df, k_min=6, k_max=21)
-# optimal_k = 21
+# optimal_k = find_optimal_k(train_features_df, k_min=6, k_max=21)
+optimal_k = 21
 
 # 5. K-Means 클러스터링
 # optimal_k = 20
