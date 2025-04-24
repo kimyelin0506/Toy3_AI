@@ -1,6 +1,4 @@
-import numpy as np
 import pandas as pd
-import torch
 import seaborn as sns
 import matplotlib.pyplot as plt
 from transformers import pipeline
@@ -142,52 +140,52 @@ df['sentiment_binary'] = binary_labels
 
 # --------------------------------------------
 # 별점과 감정 예측 비교 (정확도 측정)
-
-# 별점 기준 설정 (4, 5는 긍정, 1, 2, 3은 부정)
-def true_sentiment(rating):
-    if rating >= 4:
-        return 1  # 긍정
-    else:
-        return 0  # 부정
-
-# 별점으로 실제 감정 추정
-df['true_sentiment'] = df['rating'].apply(true_sentiment)
-
-# 예측과 실제 비교
-df['match'] = (df['sentiment_binary'] == df['true_sentiment']).astype(int)
-
-# 최종 정확도
-accuracy = df['match'].mean()
-print(f"별점과 감성 예측이 일치한 비율 (정확도): {accuracy:.4f}")
-
-# 최종 CSV로 저장
-df.to_csv('../renttherunway_data_with_sentiment.csv', index=False)
-
-print("CSV 파일 저장 완료!")
-
-# 긍정과 부정의 분포를 막대 그래프로 시각화
-sentiment_counts = df['sentiment_label'].value_counts()
-
-plt.figure(figsize=(6, 4))
-sns.barplot(x=sentiment_counts.index, y=sentiment_counts.values, palette="Blues_d",  hue=sentiment_counts.index,  legend=False)
-plt.title('Sentiment Distribution (Positive vs Negative)')
-plt.xlabel('Sentiment')
-plt.ylabel('Number of Reviews')
-plt.show()
-
-# 긍정과 부정의 감성 점수 분포를 시각화
-plt.figure(figsize=(6, 4))
-sns.histplot(df[df['sentiment_binary'] != -1]['sentiment_score'], kde=True, bins=30, color="skyblue")
-plt.title('Sentiment Score Distribution')
-plt.xlabel('Sentiment Score')
-plt.ylabel('Frequency')
-plt.show()
-
-# 평가 예시 - 부정/긍정 예측 점수와 실제 rating 점수 비교
-df['rating_diff'] = df['rating'] - df['sentiment_score']
-plt.figure(figsize=(8, 5))
-sns.boxplot(x='sentiment_label', y='rating_diff', data=df)
-plt.title('Rating Difference by Sentiment')
-plt.xlabel('Sentiment')
-plt.ylabel('Difference (Rating - Sentiment Score)')
-plt.show()
+#
+# # 별점 기준 설정 (4, 5는 긍정, 1, 2, 3은 부정)
+# def true_sentiment(rating):
+#     if rating >= 4:
+#         return 1  # 긍정
+#     else:
+#         return 0  # 부정
+#
+# # 별점으로 실제 감정 추정
+# df['true_sentiment'] = df['rating'].apply(true_sentiment)
+#
+# # 예측과 실제 비교
+# df['match'] = (df['sentiment_binary'] == df['true_sentiment']).astype(int)
+#
+# # 최종 정확도
+# accuracy = df['match'].mean()
+# print(f"별점과 감성 예측이 일치한 비율 (정확도): {accuracy:.4f}")
+#
+# # 최종 CSV로 저장
+# df.to_csv('../renttherunway_data_with_sentiment.csv', index=False)
+#
+# print("CSV 파일 저장 완료!")
+#
+# # 긍정과 부정의 분포를 막대 그래프로 시각화
+# sentiment_counts = df['sentiment_label'].value_counts()
+#
+# plt.figure(figsize=(6, 4))
+# sns.barplot(x=sentiment_counts.index, y=sentiment_counts.values, palette="Blues_d",  hue=sentiment_counts.index,  legend=False)
+# plt.title('Sentiment Distribution (Positive vs Negative)')
+# plt.xlabel('Sentiment')
+# plt.ylabel('Number of Reviews')
+# plt.show()
+#
+# # 긍정과 부정의 감성 점수 분포를 시각화
+# plt.figure(figsize=(6, 4))
+# sns.histplot(df[df['sentiment_binary'] != -1]['sentiment_score'], kde=True, bins=30, color="skyblue")
+# plt.title('Sentiment Score Distribution')
+# plt.xlabel('Sentiment Score')
+# plt.ylabel('Frequency')
+# plt.show()
+#
+# # 평가 예시 - 부정/긍정 예측 점수와 실제 rating 점수 비교
+# df['rating_diff'] = df['rating'] - df['sentiment_score']
+# plt.figure(figsize=(8, 5))
+# sns.boxplot(x='sentiment_label', y='rating_diff', data=df)
+# plt.title('Rating Difference by Sentiment')
+# plt.xlabel('Sentiment')
+# plt.ylabel('Difference (Rating - Sentiment Score)')
+# plt.show()
