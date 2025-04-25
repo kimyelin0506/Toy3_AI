@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder, MinMaxScaler
 
 # 2. 데이터 불러오기
 # data = pd.read_csv('women body syn.csv')
-data = pd.read_csv('women_body_with_bmi.csv')
+data = pd.read_csv('info/women_body_with_bmi.csv')
 # 3. 전처리
 
 ## 3-1. 컬럼명 공백 제거
