@@ -12,7 +12,7 @@ from pydantic import BaseModel
 app = FastAPI()
 
 # 사전 학습된 모델과 전처리 도구들 불러오기
-model_bundle = joblib.load("optimal_kmeans_k6_model_full2.pkl")
+model_bundle = joblib.load("../optimal_kmeans_k6_model_full2.pkl")
 kmeans = model_bundle['kmeans']              # KMeans 모델
 scaler = model_bundle['scaler']              # 수치형 특성 스케일링 도구
 encoder_age = model_bundle['encoder_age']    # 연령대 원-핫 인코더
